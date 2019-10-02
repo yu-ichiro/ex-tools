@@ -7,7 +7,7 @@ setup(
     url='git@github.com:yu-ichiro/ex-tools.git',
     author='Yuichiro Luke Smith',
     author_email='yuichiro.luke@gmail.com',
-    license='unlicense',
+    license='MIT',
     packages=['ex_tools'],
     zip_safe=False
 )
