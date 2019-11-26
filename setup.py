@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='ex-tools',
-    version='0.1.1',
+    version='0.2.0',
     description='Tools that include/extend functools/itertools +alpha',
     url='https://github.com/yu-ichiro/ex-tools',
     author='Yuichiro Luke Smith',
