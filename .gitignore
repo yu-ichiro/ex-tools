@@ -1,1 +1,5 @@
 .idea
+build
+dist
+ex_tools.egg-info
+.pytest_cache
