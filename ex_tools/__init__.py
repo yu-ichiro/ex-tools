@@ -1,5 +1,6 @@
+from .globals import *
+from .exceptions import *
 from .functools import *
 from .itertools import *
-from .globals import *
 
 name = "ex_tools"

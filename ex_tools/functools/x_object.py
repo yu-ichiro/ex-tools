@@ -1,4 +1,5 @@
-from typing import Union, Dict, Collection
+from functools import partial
+from typing import Union, Dict, Iterable, Any, Callable
 
 
 class XAbstract:
@@ -243,17 +244,35 @@ class XOperation(XObject):
         return self.__run__(x)
 
 
+class XPartial:
+    def __init__(self, callable_: Callable, *args, **kwargs):
+        self.callable = callable_
+        self.args = XAccess(args)
+        self.kwargs = XAccess(kwargs)
+
+    def __call__(self, x):
+        return self.callable(*self.args(x), **self.kwargs(x))
+
+    def __repr__(self):
+        return '{callable}(*{args}, **{kwargs})'.format(callable=self.callable,
+                                                        args=self.args,
+                                                        kwargs=self.kwargs)
+
+
 class XAccess:
-    def __init__(self, arg: Union[XAbstract, Collection, Dict]):
+    def __init__(self, arg: Union[XAbstract, Dict, Iterable, Any]):
         self.arg = arg
 
     def __call__(self, x):
         if isinstance(self.arg, XAbstract):
             return type(self.arg).__run__(self.arg, x)
         if isinstance(self.arg, Dict):
-            return type(self.arg)((key, type(x_obj).__run__(x_obj, x)) for key, x_obj in self.arg.items())
-        if isinstance(self.arg, Collection):
-            return type(self.arg)(type(x_obj).__run__(x_obj, x) for x_obj in self.arg)
+            return type(self.arg)((key, XAccess(inner_arg)(x)) for key, inner_arg in self.arg.items())
+        if isinstance(self.arg, Iterable):
+            return type(self.arg)(XAccess(inner_arg)(x) for inner_arg in self.arg)
+        if isinstance(self.arg, XPartial):
+            return self.arg(x)
+        return self.arg
 
     def __repr__(self):
         return 'XAccess x: {}'.format(repr(self.arg).replace('X', 'x'))
@@ -266,3 +285,4 @@ class FClass:
 
 X = XClass()
 F = FClass()
+Partial = XPartial
